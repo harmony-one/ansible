@@ -1,9 +1,15 @@
 ---
-- name: install epel-release
+- name: install epel-release for Common
   become: true
   yum:
     name: 'epel-release'
     state: present
+  when: ansible_distribution != 'Amazon'
+
+- name: install epel-release for AWS
+  become: true
+  shell: 'yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
+  when: ansible_distribution == 'Amazon'
 
 - name: install nodejs after epel
   become: true
@@ -13,12 +19,14 @@
     enablerepo: 'epel'
 
 - name: install nodejs version control package
+  become: true
   npm:
     name: 'n'
     global: yes
     state: present
 
 - name: change the nodejs version
+  become: true
   shell: 'n {{ nodejs_version }}'
 
 # vim: set expandtab:ts=2
