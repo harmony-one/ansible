@@ -1,0 +1,49 @@
+---
+- hosts: "{{ inventory }}"
+  remote_user: '{{ user }}'
+  serial: 1
+  gather_facts: yes
+  vars:
+    new_version: '1.0.1'
+
+  tasks:
+    - name: gather OS specific variables
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "{{ ansible_bios_version }}-{{ ansible_distribution }}.yml"
+        - "{{ cloud_platform }}-{{ ansible_distribution }}.yml"
+
+    - name: download latest install package
+      get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/v{{ new_version }}/node_exporter-{{ new_version }}.linux-amd64.tar.gz"
+        dest: "{{ USER.home }}"
+
+    - name: tar install package
+      unarchive:
+        copy: no
+        src: "{{ USER.home }}/node_exporter-{{ new_version }}.linux-amd64.tar.gz"
+        dest: "{{ USER.home }}"
+
+    - name: install node_exporter
+      become: true
+      shell: "mv -f {{ USER.home }}/node_exporter-{{ new_version }}.linux-amd64/node_exporter /usr/local/bin"
+
+    - name: change owner of bin
+      become: true
+      file:
+        dest: '/usr/local/bin/node_exporter'
+        owner: 'node_exporter'
+        group: 'node_exporter'
+
+    - name: restart node_exporter service
+      become: true
+      shell: "systemctl restart node_exporter"
+
+    - name: clear trash
+      ignore_errors: yes
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "{{ USER.home }}/node_exporter-{{ new_version }}.linux-amd64.tar.gz"
+        - "{{ USER.home }}/node_exporter-{{ new_version }}.linux-amd64"

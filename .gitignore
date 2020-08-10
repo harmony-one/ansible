@@ -1,1 +1,5 @@
 .vaultpass*
+.DS_Store
+explorer.env
+*.test.hosts
+/playbooks/roles/explorer_be/files/mainnet
