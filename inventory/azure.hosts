@@ -3,3 +3,4 @@
 
 [test:vars]
 cloud_platform=Azure
+ansible_ssh_user=hmy

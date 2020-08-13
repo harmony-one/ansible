@@ -1,7 +1,5 @@
 ---
 - hosts: "{{ inventory }}"
-  remote_user: '{{ user }}'
-  serial: 1
   gather_facts: yes
   vars:
     new_version: '1.0.1'
