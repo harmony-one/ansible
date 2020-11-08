@@ -38,5 +38,18 @@
     month: '*'
     weekday: '*'
 
+- name: setup cron task reset ssl certificate permission
+  cron:
+    name: reset ssl certificate permission
+    job: 'sudo chown -R {{ USER.user }}:{{ USER.user }} /etc/letsencrypt/{{ item }}'
+    minute: '5'
+    hour: '3'
+    day: '*'
+    month: '*'
+    weekday: '*'
+  with_items:
+    - 'live'
+    - 'archive'
+
 
 # vim: set expandtab:ts=2
