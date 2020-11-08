@@ -1,0 +1,37 @@
+---
+- hosts: '{{ inventory }}'
+  vars:
+    dockercr_host: 'harmonyone'
+    harmony_version: 'latest'
+
+  tasks:
+    - name: get harmony docker image
+      become: yes
+      docker_image:
+        name: '{{ dockercr_host }}/harmony:{{ harmony_version }}'
+        source: pull
+
+    - name: create directorys for docker volumes
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      with_items:
+        - '/home/{{ ansible_ssh_user }}/harmony-disk/data'
+        - '/home/{{ ansible_ssh_user }}/harmony-disk/logs'
+        - '/home/{{ ansible_ssh_user }}/harmony-disk/blskeys'
+
+    - name: create harmony container
+      become: yes
+      docker_container:
+        name: 'harmony'
+        image: '{{ dockercr_host }}/harmony:{{ harmony_version }}'
+        ports:
+          - '9000:9000'
+          - '9500:9500'
+          - '9800:9800'
+          - '6000:6000'
+        volumes:
+          - '/home/{{ ansible_ssh_user }}/harmony-disk/data:/root/data'
+          - '/home/{{ ansible_ssh_user }}/harmony-disk/logs:/root/logs'
+          - '/home/{{ ansible_ssh_user }}/harmony-disk/blskeys:/root/.hmy/blskeys'

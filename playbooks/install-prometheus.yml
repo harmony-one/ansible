@@ -1,0 +1,9 @@
+---
+- hosts: '{{ inventory }}'
+  roles:
+    - cloudalchemy.prometheus
+  vars:
+    prometheus_targets:
+      node:
+      - targets:
+        - localhost:9100
