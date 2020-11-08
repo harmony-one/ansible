@@ -1,0 +1,10 @@
+---
+
+PACKAGES:
+   - unzip
+   - jq
+
+USER:
+   user: ubuntu
+   group: ubuntu
+   home: /home/ubuntu
