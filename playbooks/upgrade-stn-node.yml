@@ -1,7 +1,7 @@
 ---
 - hosts: '{{ inventory }}'
   serial: "{{ stride | default(10) }}"
-  gather_facts: no
+  gather_facts: yes
   become: true
   vars:
     check_consensus: "{{ check | default('false') }}"
