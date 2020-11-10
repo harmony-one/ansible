@@ -20,7 +20,7 @@
       force: yes
 
   - name: "archive harmony log"
-    command: mv /home/ubuntu/latest/zerolog-harmony.log /home/ubuntu/latest/zerolog-harmony.log.bak
+    command: "mv /home/ubuntu/latest/zerolog-harmony.log /home/ubuntu/latest/zerolog-harmony.log.{{ ansible_date_time.iso8601 }}"
 
   - name: "restart harmony service"
     systemd:
