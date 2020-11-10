@@ -67,7 +67,7 @@
           state: stopped
 
       - name: "archive harmony log"
-        command: "mv -f {{ USER.home }}/latest/zerolog-harmony.log {{ USER.home }}/latest/zerolog-harmony.log.bak"
+        command: "mv -f {{ USER.home }}/latest/zerolog-harmony.log {{ USER.home }}/latest/zerolog-harmony.log.{{ ansible_date_time.iso8601 }}"
 
       - name: "update harmony binary"
         shell: "cp -f {{ USER.home }}/staging/{{ item }} {{ USER.home }}"
