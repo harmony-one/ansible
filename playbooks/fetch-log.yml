@@ -1,4 +1,24 @@
 ---
+- hosts: localhost
+  become: no
+  gather_facts: yes
+
+  tasks:
+  - name: get timestamp
+    shell: date +%FT%T
+    register: TMPDIR
+
+  - name: create local directory
+    file:
+      path: "/tmp/logs/{{ TMPDIR.stdout }}"
+      state: directory
+
+  - name: create symbolic link
+    file:
+      src: "/tmp/logs/{{ TMPDIR.stdout }}"
+      dest: /tmp/logs/current
+      state: link
+
 - hosts: '{{ inventory }}'
   gather_facts: yes
 
@@ -7,6 +27,6 @@
     ignore_errors: yes
     fetch:
       src: "/home/{{ ansible_user }}/latest/zerolog-harmony.log"
-      dest: "/tmp/logs/{{ host }}.log"
+      dest: "/tmp/logs/current/{{ host }}.log"
       flat: yes
       validate_checksum: no
