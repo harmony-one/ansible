@@ -238,10 +238,9 @@ function do_force_update() {
    local release=$2
 
    if $DRYRUN; then
-      echo ANSIBLE_STRATEGY=free ansible-playbook playbooks/upgrade-node.yml -f "$BATCH" -e "inventory=${inv} stride=${BATCH} upgrade=${release} force_update=true skip_consensus_check=true"
+      echo ansible-playbook playbooks/upgrade-node.yml -f "$BATCH" -e \"inventory=${inv} stride=${BATCH} upgrade=${release} force_update=true skip_consensus_check=true\"
    else
-      ANSIBLE_STRATEGY=free ansible-playbook playbooks/upgrade-node.yml -f "$BATCH" -e "inventory=${inv} stride=${BATCH} upgrade=${release} force_update=true skip_consensus_check=true"
-      sleep $SLEEP
+      ansible-playbook playbooks/upgrade-node.yml -f "$BATCH" -e "inventory=${inv} stride=${BATCH} upgrade=${release} force_update=true skip_consensus_check=true"
    fi
 }
 
