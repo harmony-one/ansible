@@ -22,6 +22,12 @@
   - debug:
       var: oVer.stdout
 
+  - name: create staging directory
+    file:
+      path: "{{ USER.home }}/staging"
+      state: directory
+      mode: '0755'
+
   - name: "install harmony binary"
     get_url:
       url: "https://s3-us-west-1.amazonaws.com/pub.harmony.one/release/linux-x86_64/{{ upgrade }}/static/harmony"
