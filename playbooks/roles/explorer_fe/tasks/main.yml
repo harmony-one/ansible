@@ -21,42 +21,6 @@
   args:
     chdir: '{{ USER.home }}/harmony-dashboard/'
 
-- name: forwarding iptables from 2000 to 443
-  become: true
-  iptables:
-    chain: 'PREROUTING'
-    table: 'nat'
-    protocol: 'tcp'
-    destination_port: '443'
-    to_ports: '2000'
-    jump: 'REDIRECT'
-
-- name: forwarding iptables from 8080 to 80
-  become: true
-  iptables:
-    chain: 'PREROUTING'
-    table: 'nat'
-    protocol: 'tcp'
-    destination_port: '80'
-    to_ports: '8080'
-    jump: 'REDIRECT'
-
-- name: save iptables rules
-  become: true
-  shell: 'sh -c "iptables-save > /usr/local/etc/iptables-backup.conf"'
-
-- name: add autorun command when system reboot
-  become: true
-  lineinfile:
-    dest: '/etc/rc.d/rc.local'
-    line: 'iptables-restore < /usr/local/etc/iptables-backup.conf'
-
-- name: active the autorun command
-  become: true
-  file:
-    dest: '/etc/rc.d/rc.local'
-    mode: '755'
-
 - name: copy harmony explorer env files
   template:
     src: 'explorer-fe.env.j2'
