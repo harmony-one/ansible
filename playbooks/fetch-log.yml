@@ -30,3 +30,11 @@
       dest: "/tmp/logs/current/{{ host }}.log"
       flat: yes
       validate_checksum: no
+
+  - name: fetch log
+    ignore_errors: yes
+    fetch:
+      src: "/{{ ansible_user }}/latest/zerolog-harmony.log"
+      dest: "/tmp/logs/current/{{ host }}.log"
+      flat: yes
+      validate_checksum: no
