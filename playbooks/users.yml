@@ -15,9 +15,6 @@
     - username: "rj"
       groups: "adm,wheel"
       comment: "Rongjian Lan"
-    - username: "dm"
-      groups: "adm,wheel"
-      comment: "Daniel Van Der Maden"
     - username: "gu"
       groups: "adm,wheel"
       comment: "Ganesha Upadhyaya"
@@ -42,6 +39,9 @@
     - username: "ra"
       groups: "adm,wheel"
       comment: "Rachit"
+    - username: "sp"
+      groups: "adm,wheel"
+      comment: "Soph"
     remove_users:
     - "foo"
     - "as"
@@ -58,6 +58,7 @@
     - "dw"
     - "nw"
     - "ns"
+    - "dm"
   tasks:
   - name: "Create user accounts"
     user:
