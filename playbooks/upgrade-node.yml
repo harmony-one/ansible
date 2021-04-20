@@ -80,6 +80,13 @@
         with_items:
           - harmony
 
+      - name: "update harmony binary to /usr/sbin"
+        become: true
+        become_user: root
+        shell: "cp -f {{ USER.home }}/staging/{{ item }} /usr/sbin"
+        with_items:
+          - harmony
+
       - name: "restart harmony service"
         become: true
         become_user: root

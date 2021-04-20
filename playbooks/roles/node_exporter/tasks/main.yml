@@ -37,7 +37,7 @@
   become: true
   copy:
     src: node_exporter.service
-    dest: /lib/systemd/system
+    dest: /usr/lib/systemd/system
   tags: cpconfig
 
 - name: enable node_exporter service
