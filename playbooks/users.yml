@@ -45,6 +45,9 @@
     - username: "xp"
       groups: "adm,wheel"
       comment: "Xiaopeng Li"
+    - username: "sh"
+      groups: "adm,wheel"
+      comment: "Shaohan Alex"
     remove_users:
     - "foo"
     - "as"
