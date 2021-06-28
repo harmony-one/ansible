@@ -18,9 +18,6 @@
     - username: "gu"
       groups: "adm,wheel"
       comment: "Ganesha Upadhyaya"
-    - username: "sj"
-      groups: "adm,wheel"
-      comment: "Sebastian Johnsson"
     - username: "sd"
       groups: "adm,wheel"
       comment: "Sahil Dewan"
@@ -48,6 +45,9 @@
     - username: "sh"
       groups: "adm,wheel"
       comment: "Shaohan Alex"
+    - username: "jy"
+      groups: "adm,wheel"
+      comment: "Jenya"
     remove_users:
     - "foo"
     - "as"
@@ -65,6 +65,7 @@
     - "nw"
     - "ns"
     - "dm"
+    - "sj"
   tasks:
   - name: "Create user accounts"
     user:
