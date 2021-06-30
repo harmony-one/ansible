@@ -1,0 +1,155 @@
+---
+- hosts: '{{ inventory }}'
+  gather_facts: yes
+  become: true
+  vars:
+    home: "{{ var_home | default('/home/ec2-user') }}"
+    nvme: "{{ var_nvme | default('/dev/nvme1n1') }}"
+    nvmep1: "{{ var_nvmep1 | default('/dev/nvme1n1p1') }}"
+
+  tasks:
+
+  - name: install required packages
+    package:
+      name: '{{ item }}'
+      state: present
+    with_list:
+      - unzip
+      - jq
+      - sysstat
+      - htop
+      - bind-utils
+      - psmisc
+
+  - name: install the_silver_searcher
+    become: true
+    copy:
+      src: ag
+      dest: /usr/bin/ag
+      mode: '0755'
+
+  - name: install harmony binary
+    get_url: 
+      url: "https://github.com/harmony-one/harmony/releases/latest/download/harmony"
+      dest: /usr/sbin/harmony
+      mode: '0755'
+
+  - name: get harmony version
+    shell: "/usr/sbin/harmony --version"
+    register: Ver
+
+  - name: print harmony version
+    debug:
+      var: Ver.stdout
+
+  - name: install hmy binary
+    get_url: 
+      url: "https://github.com/harmony-one/go-sdk/releases/latest/download/hmy"
+      dest: /usr/sbin/hmy
+      mode: '0755'
+
+  - name: create partition on /dev/nvme1n1
+    parted:
+      device: '{{ nvme }}'
+      number: 1
+      state: present
+
+  - name: Create a ext4 filesystem on /dev/nvme1n1p1 and check disk blocks
+    filesystem:
+      fstype: ext4
+      dev: '{{ nvmep1 }}'
+
+  - name: Create /data directory
+    file:
+      path: '{{ home }}/data'
+      state: directory
+      owner: '{{ ansible_user }}'
+      mode: '0755'
+
+  - name: Mount up /data
+    ansible.posix.mount:
+      path: '{{ home }}/data'
+      src: '{{ nvmep1 }}'
+      fstype: ext4
+      state: present
+
+  - name: Change owner of /data directory
+    file:
+      path: '{{ home }}/data'
+      state: directory
+      owner: '{{ ansible_user }}'
+      mode: '0755'
+
+  - name: install harmony.service
+    template:
+      src: harmony.service.exp
+      dest: "/etc/systemd/system/harmony.service"
+      backup: yes
+      force: yes
+
+  - name: create .hmy/blskeys directory
+    file:
+      path: "{{ home }}/.hmy/blskeys"
+      state: directory
+
+  - name: create dummy bls key and pass for explorer node
+    file:
+      path: "{{ home }}/.hmy/blskeys/{{ item }}"
+      state: touch
+    with_items:
+      - "bls.key"
+      - "bls.pass"
+
+  - name: disable selinux
+    ignore_errors: yes
+    selinux:
+      state: disabled
+
+
+  - name: install rclone 1
+    get_url:
+      url: https://rclone.org/install.sh
+      dest: '{{ home }}/install-rclone.sh'
+      mode: '0755'
+
+  - name: install rclone 2
+    command:
+       cmd: "{{ home }}/install-rclone.sh"
+    ignore_errors: yes
+    become: true
+
+  - name: create .config/rclone directory
+    file:
+      path: "{{ home }}/.config/rclone"
+      state: directory
+
+  - name: download rclone.sh
+    get_url: 
+      url: https://raw.githubusercontent.com/harmony-one/terraform/master/aws.1/files/rclone.sh
+      dest: '{{ home }}/rclone.sh'
+      mode: '0755'
+
+  - name: download rclone.conf
+    get_url:
+      url: https://raw.githubusercontent.com/harmony-one/terraform/master/aws.1/files/rclone.conf
+      dest: '{{ home }}/.config/rclone/rclone.conf'
+      mode: '0644'
+
+  - name: Creating the shard.txt file
+    copy:
+      dest: "{{ home }}/data/shard.txt"
+      content: |
+         0
+
+  - name: run rclone
+    command:
+      cmd: "{{ home }}/rclone.sh mainnet.min"
+      chdir: "{{ home }}/data"
+    ignore_errors: yes
+
+  - name: enable harmony service
+    systemd: 
+      name: "harmony"
+      daemon_reload: yes
+      enabled: yes
+      state: restarted
