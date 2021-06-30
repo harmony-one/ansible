@@ -5,6 +5,9 @@ PACKAGES:
    - jq
    - sysstat
    - htop
+   - iptraf
+   - epel-release
+   - iftop
 
 USER:
    user: ec2-user
