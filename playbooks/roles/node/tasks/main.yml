@@ -73,7 +73,10 @@
   when: do_fresh == 'true'
 
 - name: download harmony binaries
-  shell: "{{ USER.home }}/node.sh -N {{ network }} -d && mv -f staging/harmony {{ USER.home }} > node.log 2> node.err"
+  get_url:
+    url: https://github.com/harmony-one/harmony/releases/latest/download/harmony
+    dest: '/usr/sbin/harmony'
+    mode: '0755'
 
 - name: get harmony version
   shell: "{{ USER.home }}/harmony --version"
