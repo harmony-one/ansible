@@ -20,14 +20,9 @@
 - name: download hmycli
   get_url: 
     url: https://harmony.one/hmycli
-    dest: '{{ USER.home }}/hmy'
+    dest: '/usr/sbin/hmy'
     mode: '0755'
-
-- name: download node.sh
-  get_url: 
-    url: https://raw.githubusercontent.com/harmony-one/harmony/main/scripts/node.sh
-    dest: '{{ USER.home }}/node.sh'
-    mode: '0755'
+  become: true
 
 - name: create .config/rclone directory
   file:
@@ -45,14 +40,6 @@
     url: https://raw.githubusercontent.com/harmony-one/terraform/master/aws.1/files/rclone.conf
     dest: '{{ USER.home }}/.config/rclone/rclone.conf'
     mode: '0644'
-
-- name: get node.sh version
-  shell: '{{ USER.home }}/node.sh -v'
-  register: ver
-
-- name: print node.sh version
-  debug:
-    var: ver.stderr
 
 - name: clean up legacy
   ignore_errors: yes
@@ -72,14 +59,15 @@
   shell: rm -rf harmony_db_*
   when: do_fresh == 'true'
 
-- name: download harmony binaries
+- name: download harmony binary
   get_url:
-    url: https://github.com/harmony-one/harmony/releases/latest/download/harmony
+    url: 'https://harmony.one/binary'
     dest: '/usr/sbin/harmony'
     mode: '0755'
+  become: true
 
 - name: get harmony version
-  shell: "{{ USER.home }}/harmony --version"
+  shell: "/usr/sbin/harmony --version"
   register: Ver
 
 - name: print harmony version
@@ -106,6 +94,19 @@
     - "bls.pass"
   when: node_type_var == 'Explorer'
 
+- name: copy harmony.conf file
+  template:
+    src: harmony.conf.j2
+    dest: "{{ USER.home }}/harmony.conf"
+    backup: yes
+    force: yes
+
+- name: Creating the shard.txt file
+  copy:
+   dest: "{{ USER.home }}/shard.txt"
+   content: |
+      {{ shard }}
+
 - name: tasks needs sudo
   block:
    - name: copy harmony service file
@@ -131,11 +132,6 @@
 
 - name: tasks for Validator
   block:
-   - name: create db directory
-     file:
-       path: "{{ USER.home }}/harmony_db_{{ shard }}"
-       state: directory
-
    - name: install rclone 1
      get_url:
        url: https://rclone.org/install.sh

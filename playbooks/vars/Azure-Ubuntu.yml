@@ -1,0 +1,10 @@
+---
+
+PACKAGES:
+   - unzip
+   - jq
+
+USER:
+   user: hmny
+   group: hmny
+   home: /home/hmny

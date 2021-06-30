@@ -11,11 +11,7 @@ WorkingDirectory={{ USER.home }}
 {% if node_type_var == "Explorer" %}
 ExecStart=/usr/sbin/harmony --run=explorer --run.archive={{ archival }} --run.beacon-archive={{ archival }} --run.shard={{ explorer_shard_index }} --http.ip 0.0.0.0 --ws.ip 0.0.0.0
 {% else %}
-{% if legacy == "true" %}
-ExecStart={{ USER.home }}/harmony --run.legacy --http.ip 0.0.0.0
-{% else %}
-ExecStart={{ USER.home }}/harmony --http.ip 0.0.0.0
-{% endif %}
+ExecStart=/usr/sbin/harmony -c {{ USER.home }}/harmony.conf
 {% endif %}
 StandardError=syslog
 SyslogIdentifier=harmony

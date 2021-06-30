@@ -2,6 +2,9 @@
 
 PACKAGES:
    - unzip
+   - jq
+   - sysstat
+   - htop
 
 USER:
    user: ec2-user

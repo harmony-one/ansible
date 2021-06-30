@@ -67,7 +67,7 @@
       mode: '0755'
 
   - name: Mount up /data
-    ansible.posix.mount:
+    mount:
       path: '{{ home }}/data'
       src: '{{ nvmep1 }}'
       fstype: ext4
