@@ -6,7 +6,6 @@ PACKAGES:
    - sysstat
    - htop
    - iptraf
-   - epel-release
    - iftop
 
 USER:

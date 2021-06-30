@@ -10,12 +10,18 @@
   tags:
     - vars
 
+- name: install epel package
+  shell: "amazon-linux-extras install -y epel"
+  become: yes
+  ignore_errors: yes
+
 - name: install required packages
   package:
     name: '{{ item }}'
     state: present
   become: true
   with_items: '{{ PACKAGES }}'
+
 
 - name: download hmycli
   get_url: 
@@ -84,6 +90,12 @@
     src: "{{ host }}/"
     dest: "{{ USER.home }}/.hmy/blskeys/"
   when: node_type_var != 'Explorer'
+
+- name: copy utils scripts
+  copy:
+    src: utils/
+    dest: /usr/sbin
+  become: true
 
 - name: create dummy bls key and pass for explorer node
   file:
