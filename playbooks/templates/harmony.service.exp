@@ -10,7 +10,7 @@ RestartSec=1
 User=ec2-user
 # Environment="GODEBUG=madvdontneed=1"
 WorkingDirectory=/home/ec2-user
-ExecStart=/home/ec2-user/harmony --run=explorer --run.archive=false --run.beacon-archive=false --run.shard=0 --http.ip=0.0.0.0 --ws.ip=0.0.0.0 --datadir=/home/ec2-user/data --http.rosetta --pprof --pprof.addr=0.0.0.0:6060 --rpc.ratelimit=5000
+ExecStart=/usr/sbin/harmony --run=explorer --run.archive=false --run.beacon-archive=false --run.shard=0 --http.ip=0.0.0.0 --ws.ip=0.0.0.0 --datadir=/home/ec2-user/data --http.rosetta --pprof --pprof.addr=0.0.0.0:6060 --rpc.ratelimit=5000
 StandardError=syslog
 SyslogIdentifier=harmony
 StartLimitInterval=0
