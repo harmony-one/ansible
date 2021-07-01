@@ -33,6 +33,13 @@
     shell: /bin/false
     system: yes
 
+- name: make sure system folder exist
+  become: true
+  file:
+    state: directory
+    path: /usr/lib/systemd/system
+  tags: cpconfig
+
 - name: copy node_exporter service files
   become: true
   copy:
