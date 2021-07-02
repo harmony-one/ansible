@@ -95,6 +95,7 @@
   copy:
     src: utils/
     dest: /usr/sbin
+    mode: 0755
   become: true
 
 - name: create dummy bls key and pass for explorer node
